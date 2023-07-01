@@ -1,0 +1,35 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+keys
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# env
+.env
+
+firebaseConfig.js
+Footer
+© 2023 GitHub, Inc.
+client/assets/lyriks_starter_code/lyriks_starter_code/.env.example
+client/assets/lyriks_starter_code/lyriks_starter_code/.eslintrc.js
+client/assets/lyriks_starter_code/lyriks_starter_code/package-lock.json

@@ -1,0 +1,202 @@
+@import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@100;300;400;500;700;800;900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Alegreya Sans", sans-serif;
+}
+
+body {
+  background: #343541;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  background-image: url('../assets/girls/imam.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: scaleX(-1);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#chat_container {
+  flex: 1;
+  width: 30%;
+  height: 80%;
+  overflow-y: scroll;
+  transform: scaleX(-1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  justify-content: flex-start;
+  margin-left: 550px;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+}
+
+/* hides scrollbar */
+#chat_container::-webkit-scrollbar {
+  display: none;
+}
+
+.wrapper {
+  width: 100%;
+  padding: 5px;
+}
+
+.ai {
+  background: #4f5061cd;
+}
+
+.chat {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.profile {
+  width: 36px;
+  height: 36px;
+  border-radius: 5px;
+
+  background: #5435e2;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ai .profile {
+  background: #edf4f2;
+}
+
+.profile img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+}
+
+.message {
+  flex: 1;
+
+  color: #ffffff;
+  font-size: 14px;
+
+  max-width: 100%;
+  overflow-x: scroll;
+
+  white-space: pre-wrap;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* hides scrollbar */
+.message::-webkit-scrollbar {
+  display: none;
+}
+
+form {
+  width: 80%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 5px;
+  background: #40414F;
+  transform: scaleX(-1);
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+#startRecognition {
+  background-color: #0066ff;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+}
+
+#logoutBtn {
+  background-color: #0066ff;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+}
+
+textarea {
+  width: 100%;
+
+  color: #fff;
+  font-size: 18px;
+
+  padding: 2px;
+  background: transparent;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+
+button {
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+}
+
+form img {
+  width: 30px;
+  height: 30px;
+}
+
+/* CSS for screens with a maximum width of 768px */
+@media only screen and (max-width: 768px) {
+  #chat_container {
+    width: 80%;
+    margin-left: 10%;
+  }
+  .chat {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* CSS for screens with a minimum width of 768px */
+@media only screen and (min-width: 768px) {
+  #chat_container {
+    width: 30%;
+    margin-left: 550px;
+  }
+  .chat {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
