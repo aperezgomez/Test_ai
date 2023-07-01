@@ -14,7 +14,7 @@ body {
 #app {
   width: 100vw;
   height: 100vh;
-  background-image: url('../assets/girls/imam.png');
+  background-image: url('/assets/girls/imam.png');
   background-size: cover;
   background-repeat: no-repeat;
   transform: scaleX(-1);

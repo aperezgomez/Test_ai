@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <title>My Website</title>
-    <link rel="stylesheet" href="style1.css">
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="..chat/chat.html" class="register-btn">Get Started</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <div class="hero-image"></div>
-    </main>
-</body>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Open AI Codex App</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="app">
+      <div id="chat_container"></div>
+      <form>
+        <button id="startRecognition">Start Voice</button>
+
+        <textarea name="prompt" rows="1" cols="1" placeholder="I am at your disposal"></textarea>
+        <button type="submit"><img src="/assets/send.svg" alt="submit icon" /></button>
+
+        <button id="logoutBtn">Logout</button>
+      </form>
+    </div>
+    <script type="module" src="chat.js"></script>
+  </body>
 </html>
