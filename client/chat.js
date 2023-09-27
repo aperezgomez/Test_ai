@@ -3,8 +3,17 @@ import user from '/assets/user.svg';
 
 const form = document.querySelector('form');
 const chatContainer = document.querySelector('#chat_container');
+const promptInput = form.querySelector('textarea[name="prompt"]');
+const startRecognitionButton = document.getElementById('startRecognition');
 
-// Helper Functions
+const recognition = new webkitSpeechRecognition();
+recognition.continuous = true;
+recognition.interimResults = true;
+recognition.lang = 'en-US';
+
+let finalTranscript = '';
+let isAIResponding = false;
+
 function generateUniqueId() {
     const timestamp = Date.now();
     const randomNumber = Math.random();
@@ -60,13 +69,42 @@ function typeText(element, text) {
     }, 20);
 }
 
-// Event Handlers
-async function handleSubmit(e) {
-    e.preventDefault();
+recognition.onresult = function(event) {
+    let interimTranscript = '';
 
-    const data = new FormData(form);
-    chatContainer.innerHTML += chatStripe(false, data.get('prompt'));
-    form.reset();
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+            sendPrompt(finalTranscript);
+            finalTranscript = '';
+        } else {
+            interimTranscript += transcript;
+        }
+    }
+
+    promptInput.value = finalTranscript + interimTranscript;
+};
+
+recognition.onend = function() {
+    if (!isAIResponding && finalTranscript === '') {
+        recognition.start();  // If the user is not done and the AI is not responding, continue listening
+    }
+};
+
+startRecognitionButton.addEventListener('click', function() {
+    if (isAIResponding) {
+        recognition.stop();
+    } else {
+        recognition.start();
+    }
+});
+
+async function sendPrompt(promptText) {
+    if (promptText.trim() === '') return;
+
+    isAIResponding = true;
+    recognition.stop();
 
     const uniqueId = generateUniqueId();
     chatContainer.innerHTML += chatStripe(true, " ", uniqueId);
@@ -82,7 +120,7 @@ async function handleSubmit(e) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                prompt: data.get('prompt'),
+                prompt: promptText,
                 openaiAPI: sessionStorage.getItem('openaiAPI')
             })
         });
@@ -103,47 +141,24 @@ async function handleSubmit(e) {
         messageDiv.innerHTML = 'Error occurred';
         console.error('Error:', error);
     }
+
+    isAIResponding = false;
+    recognition.start();
 }
 
-function initSpeechRecognition() {
-    const startRecognitionButton = document.querySelector('#startRecognition');
-    if (startRecognitionButton) {
-        startRecognitionButton.addEventListener('click', () => {
-            if ('webkitSpeechRecognition' in window) {
-                const recognition = new webkitSpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = true;
+document.addEventListener('DOMContentLoaded', function() {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-                recognition.onstart = () => console.log('Speech recognition started');
-                recognition.onresult = (event) => {
-                    const lastResultIndex = event.results.length - 1;
-                    const transcript = event.results[lastResultIndex][0].transcript;
-                    if (event.results[lastResultIndex].isFinal) {
-                        handleSpokenInput(transcript);
-                    }
-                };
+        const prompt = promptInput.value;
+        sendPrompt(prompt);
+    });
 
-                recognition.onerror = (event) => console.error('Speech recognition error:', event.error);
-                recognition.start();
-            } else {
-                alert('Your browser does not support speech recognition. Please use a browser that supports it, such as Google Chrome.');
-            }
-        });
-    }
-}
-
-function handleSpokenInput(transcript) {
-    const submitEvent = new Event('submit');
-    form.prompt.value = transcript;
-    form.dispatchEvent(submitEvent);
-    form.reset();
-}
-
-// Event Listeners
-form.addEventListener('submit', handleSubmit);
-form.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') {
-        handleSubmit(e);
-    }
+    form.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const prompt = promptInput.value;
+            sendPrompt(prompt);
+        }
+    });
 });
-document.addEventListener('DOMContentLoaded', initSpeechRecognition);
