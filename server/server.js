@@ -7,6 +7,8 @@ import fs from 'fs';
 dotenv.config();
 
 const app = express();
+const PORT = 5000;
+
 app.use(cors());
 app.use(express.json());
 
@@ -19,22 +21,22 @@ const openai = new OpenAIApi(configuration);
 let firstPrompt = '';
 const promptHistory = [];
 
-fs.readFile('first_prompt.txt', 'utf8', (err, data) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-  firstPrompt = data.trim();
+try {
+  firstPrompt = fs.readFileSync('first_prompt.txt', 'utf8').trim();
   console.log(`Loaded first prompt: ${firstPrompt}`);
-});
+} catch (err) {
+  console.error(err);
+}
 
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).send({
     message: 'This is OpenAI CodeX'
   });
 });
 
-app.post('/', async (req, res) => {
+app.post('/', handlePrompt);
+
+async function handlePrompt(req, res) {
   try {
     const prompt = req.body.prompt;
 
@@ -49,13 +51,12 @@ app.post('/', async (req, res) => {
     } else {
       promptWithHistory = prompt;
       firstPrompt = prompt;
-      fs.writeFile('first_prompt.txt', prompt, (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
+      try {
+        fs.writeFileSync('first_prompt.txt', prompt);
         console.log(`Saved first prompt: ${prompt}`);
-      });
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     const response = await openai.createCompletion({
@@ -75,6 +76,6 @@ app.post('/', async (req, res) => {
     console.log(error);
     res.status(500).send({ error });
   }
-});
+}
 
-app.listen(5000, () => console.log('Server is running on port http://localhost:5000'));
+app.listen(PORT, () => console.log(`Server is running on port http://localhost:${PORT}`));
