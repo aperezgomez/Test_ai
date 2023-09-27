@@ -13,6 +13,7 @@ recognition.lang = 'en-US';
 
 let finalTranscript = '';
 let isAIResponding = false;
+let isRecording = false;
 
 function generateUniqueId() {
     const timestamp = Date.now();
@@ -70,35 +71,41 @@ function typeText(element, text) {
 }
 
 recognition.onresult = function(event) {
-    let interimTranscript = '';
+  let interimTranscript = '';
 
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-            finalTranscript += transcript;
-            sendPrompt(finalTranscript);
-            finalTranscript = '';
-        } else {
-            interimTranscript += transcript;
-        }
-    }
+  for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+      if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+      } else {
+          interimTranscript += transcript;
+      }
+  }
 
-    promptInput.value = finalTranscript + interimTranscript;
-};
-
-recognition.onend = function() {
-    if (!isAIResponding && finalTranscript === '') {
-        recognition.start();  // If the user is not done and the AI is not responding, continue listening
-    }
+  promptInput.value = finalTranscript + interimTranscript;
 };
 
 startRecognitionButton.addEventListener('click', function() {
-    if (isAIResponding) {
-        recognition.stop();
-    } else {
-        recognition.start();
-    }
+  if (isRecording) {
+      recognition.stop();
+  } else {
+      finalTranscript = ''; // Reset final transcript before starting a new recording
+      recognition.start();
+  }
 });
+
+recognition.onstart = function() {
+  isRecording = true;
+  startRecognitionButton.textContent = "Stop Recording"; // Optional: change the button label
+};
+
+recognition.onend = function() {
+  if (isRecording) {
+      sendPrompt(finalTranscript);
+      isRecording = false;
+      startRecognitionButton.textContent = "Start Recording"; // Optional: revert the button label
+  }
+};
 
 async function sendPrompt(promptText) {
     if (promptText.trim() === '') return;
