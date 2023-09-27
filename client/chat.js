@@ -70,6 +70,11 @@ function typeText(element, text) {
     }, 20);
 }
 
+function displayInitialMessage() {
+  const initialMessage = "Hello! Click on 'Start Voice' to begin recording. Click again to send your message.";
+  chatContainer.innerHTML += chatStripe(true, initialMessage, generateUniqueId());
+}
+
 recognition.onresult = function(event) {
   let interimTranscript = '';
 
@@ -154,18 +159,21 @@ async function sendPrompt(promptText) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+  displayInitialMessage(); // Display the initial instruction
 
-        const prompt = promptInput.value;
-        sendPrompt(prompt);
-    });
+  form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-    form.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const prompt = promptInput.value;
-            sendPrompt(prompt);
-        }
-    });
+      const prompt = promptInput.value;
+      sendPrompt(prompt);
+  });
+
+  form.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') {
+          e.preventDefault();
+          const prompt = promptInput.value;
+          sendPrompt(prompt);
+      }
+  });
 });
+
